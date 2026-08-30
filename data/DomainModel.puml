@@ -1,0 +1,79 @@
+@startuml Domain Model
+    <style>
+    classDiagram {
+    BackgroundColor: #2B2D30;
+        arrow {
+            FontColor: #F5F5F5;
+            LineColor: #F5F5F5;
+            LineThickness 2;
+        }
+    }
+    element {
+        BackgroundColor: #F5F5F5;
+        note {
+        BackgroundColor: #FFFFDF;
+        }
+    }
+    </style>
+
+    skinparam style strictuml
+    hide empty members
+
+    class "User" as user {
+        username
+        email
+        password
+
+        createdAt
+        updatedAt
+    }
+
+    class "Vehicle" as vehicle {
+        make
+        model
+        year
+        registrationNumber
+        mileage
+
+        createdAt
+        updatedAt
+    }
+
+    class "MileageEntry" as mileageEntry {
+        date
+        mileage
+    }
+
+    class "FuelEntry" as fuelEntry {
+        date
+        mileage
+        liters
+        price
+    }
+
+    class "MaintenanceEntry" as maintenanceEntry {
+        date
+        mileage
+        description
+        cost
+
+        maintenanceType
+    }
+
+    note right of mileageEntry
+        Can be created:
+        - Automatically from FuelEntry
+        - Automatically from MaintenanceEntry
+        - Manually by the user
+    end note
+
+    user "1 " *-- "many " vehicle
+
+    vehicle "1 " *-- "many " fuelEntry
+    vehicle "1 " *-- "many  " maintenanceEntry
+    vehicle "1  " *-- "many  " mileageEntry
+
+    fuelEntry ..> mileageEntry : creates
+    maintenanceEntry ..> mileageEntry : creates
+
+@enduml
