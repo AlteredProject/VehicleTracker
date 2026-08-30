@@ -2,6 +2,7 @@ package app.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -15,10 +16,13 @@ import java.time.LocalDate;
 @ToString
 public class MaintenanceEntry {
     @Id
-    private long entryId;
+    private Integer entryId;
     private LocalDate date;
     private float mileage;
     private String description;
     private double cost;
 
+    @ManyToOne
+    @ToString.Exclude
+    private Vehicle vehicle;
 }

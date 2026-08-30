@@ -1,10 +1,14 @@
 package app.entities;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,11 +19,15 @@ import java.time.LocalDate;
 @ToString
 public class User {
     @Id
-    private Long userId;
+    private Integer userId;
     private String username;
     private String email;
     private String password;
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @Builder.Default
+    private Set<Vehicle> vehicles = new HashSet<>();
 }
