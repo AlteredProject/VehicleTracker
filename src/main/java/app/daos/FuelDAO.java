@@ -77,9 +77,11 @@ public class FuelDAO implements IDAO<FuelEntry, Integer> {
 
     @Override
     public FuelEntry update(FuelEntry fuelEntry) {
+
         if (fuelEntry == null || fuelEntry.getEntryId() == null) {
             throw new ApiException(400, "FuelEntry id is required");
         }
+
         FuelEntry updated;
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
@@ -107,9 +109,11 @@ public class FuelDAO implements IDAO<FuelEntry, Integer> {
 
     @Override
     public boolean delete(Integer id) {
+
         if (id == null) {
             throw new ApiException(400, "FuelEntry id is required");
         }
+
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             try {
