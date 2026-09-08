@@ -15,6 +15,8 @@ import lombok.ToString;
 public class MotorVehicleDTO {
     @JsonProperty("registration_number")
     private String registrationNumber;
+    @JsonProperty("type")
+    private String type;
     @JsonProperty("make")
     private String make;
     @JsonProperty("model")
