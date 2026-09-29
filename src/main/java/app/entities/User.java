@@ -1,9 +1,6 @@
 package app.entities;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -17,6 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Builder
 @ToString
+@Table(name = "users")
 public class User {
     @Id
     private Integer userId;

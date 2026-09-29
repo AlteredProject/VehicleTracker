@@ -17,11 +17,21 @@ import java.util.Set;
 @ToString
 public class Vehicle {
     @Id
-    private Integer vehicleId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long vehicleId;
+    private String registrationNumber;
+    private String status;
+    private String vin;
+    private String type;
     private String make;
     private String model;
+    private String variant;
+    private String chassisType;
     private int modelYear;
-    private String registrationNumber;
+    private String color;
+    private String fuelType;
+    private Double engineVolume;
+    private Double enginePower;
     private float mileage;
 
     private LocalDate createdAt;
@@ -35,14 +45,17 @@ public class Vehicle {
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     private Set<FuelEntry> fuelEntries = new HashSet<>();
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     private Set<MaintenanceEntry> maintenanceEntries = new HashSet<>();
 
     @OneToMany(mappedBy = "vehicle", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     private Set<MileageEntry> mileageEntries = new HashSet<>();
 
 

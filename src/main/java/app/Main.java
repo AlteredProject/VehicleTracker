@@ -1,18 +1,24 @@
 package app;
 
+import app.config.HibernateConfig;
 import app.dtos.MotorVehicleDTO;
 import app.services.MotorAPIService;
+import app.services.VehicleTrackerService;
+import jakarta.persistence.EntityManagerFactory;
 
 public class Main {
     static void main() {
-        String apiKey = System.getenv("API_KEY");
+        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
+        MotorAPIService motorAPIService = new MotorAPIService();
+        VehicleTrackerService vehicleTrackerService = new VehicleTrackerService(emf);
 
         String registrationNumber = "CL65485";
 
-        MotorAPIService motorAPIService = new MotorAPIService(apiKey);
 
         MotorVehicleDTO vehicle = motorAPIService.getVehicle(registrationNumber);
 
-        System.out.println(vehicle);
+        vehicleTrackerService.createVehicle(vehicle);
+
+        vehicleTrackerService.getVehicle(1);
     }
 }

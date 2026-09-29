@@ -5,11 +5,10 @@ import app.dtos.MotorVehicleDTO;
 public class MotorAPIService {
     private static final String BASE_URL = "https://v1.motorapi.dk/vehicles/";
     private final APIReader apiReader;
-    private final String apiKey;
+    private final String apiKey = System.getenv("API_KEY");
 
-    public MotorAPIService(String apiKey) {
+    public MotorAPIService() {
         this.apiReader = new APIReader();
-        this.apiKey = apiKey;
     }
 
     public MotorVehicleDTO getVehicle(String registrationNumber) {

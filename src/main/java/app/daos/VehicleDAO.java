@@ -138,4 +138,22 @@ public class VehicleDAO implements IDAO<Vehicle, Integer> {
         }
         return true;
     }
+
+    public Vehicle getVehicleByRegistrationNumber(String registrationNumber) {
+        if (registrationNumber == null || registrationNumber.isBlank()) {
+            throw new ApiException(400, "Registration number is required");
+        }
+
+        try (EntityManager em = emf.createEntityManager()) {
+            try {
+                TypedQuery<Vehicle> query = em.createQuery("SELECT v FROM Vehicle v WHERE v.registrationNumber = :registrationNumber", Vehicle.class);
+                query.setParameter("registrationNumber", registrationNumber);
+
+                return query.getResultStream().findFirst().orElse(null);
+
+            } catch (PersistenceException e) {
+                throw new ApiException(500, "Get Vehicle failed: " + e.getMessage());
+            }
+        }
+    }
 }

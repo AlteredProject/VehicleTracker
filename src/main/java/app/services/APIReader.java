@@ -29,8 +29,5 @@ public class APIReader {
         } catch (Exception e) {
             throw new RuntimeException("API Request failed", e);
         }
-
-
-
     }
 }
