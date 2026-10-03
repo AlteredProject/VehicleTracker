@@ -3,15 +3,14 @@ package app.services;
 import app.daos.VehicleDAO;
 import app.dtos.MotorVehicleDTO;
 import app.entities.Vehicle;
-import jakarta.persistence.EntityManagerFactory;
 
 import java.time.LocalDate;
 
 public class VehicleTrackerService {
     private final VehicleDAO vehicleDAO;
 
-    public VehicleTrackerService(EntityManagerFactory emf) {
-        this.vehicleDAO = new VehicleDAO(emf);
+    public VehicleTrackerService(VehicleDAO vehicleDAO) {
+        this.vehicleDAO = vehicleDAO;
     }
 
     public void createVehicle(MotorVehicleDTO vehicleDTO) {

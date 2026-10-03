@@ -1,7 +1,12 @@
 package app;
 
 import app.config.HibernateConfig;
+import app.daos.FuelDAO;
+import app.daos.MaintenanceDAO;
+import app.daos.MileageDAO;
+import app.daos.VehicleDAO;
 import app.dtos.MotorVehicleDTO;
+import app.entities.MileageEntry;
 import app.services.MotorAPIService;
 import app.services.VehicleTrackerService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,10 +21,16 @@ public class Main {
 
         MotorAPIService motorAPIService = new MotorAPIService();
 
-        VehicleTrackerService vehicleTrackerService = new VehicleTrackerService(emf);
 
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
+
+        FuelDAO fuelDAO = new FuelDAO(emf);
+        MaintenanceDAO maintenanceDAO = new MaintenanceDAO(emf);
+        MileageDAO mileageDAO = new MileageDAO(emf);
+        VehicleDAO vehicleDAO = new VehicleDAO(emf);
+
+        VehicleTrackerService vehicleTrackerService = new VehicleTrackerService(vehicleDAO);
 
         Javalin app = Javalin.create(config -> {
             config.showJavalinBanner = false;
