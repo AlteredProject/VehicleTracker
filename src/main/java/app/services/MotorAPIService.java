@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dtos.MotorVehicleDTO;
+import app.utils.APIReader;
 
 public class MotorAPIService {
     private static final String BASE_URL = "https://v1.motorapi.dk/vehicles/";
