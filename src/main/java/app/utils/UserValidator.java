@@ -16,17 +16,32 @@ public class UserValidator {
             return listOfValidationErrors;
         }
 
+        String name = userRegistryDTO.name();
         String email = userRegistryDTO.email();
         String phone = userRegistryDTO.phone();
         String password = userRegistryDTO.password();
         String passwordRepeat = userRegistryDTO.passwordRepeat();
 
-        listOfValidationErrors.add(validateEmail(email));
-        listOfValidationErrors.add(validatePhoneNumber(phone));
-        listOfValidationErrors.add(validatePassword(password));
-        listOfValidationErrors.add(validateMatching(password, passwordRepeat));
+        addErrorIfPresent(listOfValidationErrors,validateName(name));
+        addErrorIfPresent(listOfValidationErrors, validateEmail(email));
+        addErrorIfPresent(listOfValidationErrors, validatePhoneNumber(phone));
+        addErrorIfPresent(listOfValidationErrors, validatePassword(password));
+        addErrorIfPresent(listOfValidationErrors, validateMatching(password, passwordRepeat));
 
         return listOfValidationErrors;
+    }
+
+    private void addErrorIfPresent(List<String> errorsList, String error) {
+        if (error != null) {
+            errorsList.add(error);
+        }
+    }
+
+    private String validateName(String name) {
+        if(name.length() < 6 || name.length() > 20) {
+            return "Name must be between 6 and 20 characters";
+        }
+        return null;
     }
 
     private String validateEmail(String email) {
@@ -40,7 +55,7 @@ public class UserValidator {
     private String validatePhoneNumber(String phoneNumber) {
         String phoneNumRegex = "^[0-9]{8}$";
         if(!phoneNumber.matches(phoneNumRegex)) {
-            return "Not a valid phonenumber";
+            return "Not a valid phone number";
         }
         return null;
     }
@@ -49,11 +64,10 @@ public class UserValidator {
         if(password.chars().noneMatch(Character::isDigit)) {
             return "Password must contain a number";
         }
-        if(password.chars().noneMatch(Character::isLetterOrDigit)) {
+        if(password.chars().allMatch(Character::isLetterOrDigit)) {
             return "Password must contain special character";
         }
-        String passwordRegex = "^[a-zA-Z0-9]{8,20}$";
-        if(!password.matches(passwordRegex)) {
+        if(password.length() < 8 || password.length() > 20) {
             return "Password must be between 8-20 characters";
         }
         return null;

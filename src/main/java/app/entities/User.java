@@ -17,9 +17,11 @@ import java.util.Set;
 @Table(name = "users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userId;
     private String username;
     private String email;
+    private String phone;
     private String password;
 
     private LocalDate createdAt;
@@ -27,5 +29,6 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default
+    @ToString.Exclude
     private Set<Vehicle> vehicles = new HashSet<>();
 }

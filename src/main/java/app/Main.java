@@ -1,14 +1,12 @@
 package app;
 
 import app.config.HibernateConfig;
-import app.daos.FuelDAO;
-import app.daos.MaintenanceDAO;
-import app.daos.MileageDAO;
-import app.daos.VehicleDAO;
+import app.daos.*;
 import app.dtos.MotorVehicleDTO;
-import app.entities.MileageEntry;
+import app.dtos.UserRegistryDTO;
 import app.services.MotorAPIService;
-import app.services.VehicleTrackerService;
+import app.services.UserService;
+import app.services.VehicleService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import io.javalin.Javalin;
@@ -29,8 +27,10 @@ public class Main {
         MaintenanceDAO maintenanceDAO = new MaintenanceDAO(emf);
         MileageDAO mileageDAO = new MileageDAO(emf);
         VehicleDAO vehicleDAO = new VehicleDAO(emf);
+        UserDAO userDAO = new UserDAO(emf);
 
-        VehicleTrackerService vehicleTrackerService = new VehicleTrackerService(vehicleDAO);
+        VehicleService vehicleService = new VehicleService(vehicleDAO);
+        UserService userService = new UserService(userDAO);
 
         Javalin app = Javalin.create(config -> {
             config.showJavalinBanner = false;
@@ -40,11 +40,21 @@ public class Main {
 
         String registrationNumber = "CL65485";
 
+        UserRegistryDTO userRegistration = new UserRegistryDTO(
+        "John Bakke",
+        "john.bakke@gmail.com",
+        "21282224",
+        "!johnbakke1",
+        "!johnbakke1"
+        );
 
+        userService.createUser(userRegistration);
+        userService.getUser(1);
+
+        /* === Finds and creates vehicle by registrationNumber ===
         MotorVehicleDTO vehicle = motorAPIService.getVehicle(registrationNumber);
-
-        vehicleTrackerService.createVehicle(vehicle);
-
-        vehicleTrackerService.getVehicle(1);
+        vehicleService.createVehicle(vehicle);
+        vehicleService.getVehicle(1);
+         */
     }
 }

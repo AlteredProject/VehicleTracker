@@ -1,8 +1,6 @@
 package app.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -16,6 +14,7 @@ import java.time.LocalDate;
 @ToString
 public class MileageEntry {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer entryId;
     private LocalDate date;
     private float mileage;

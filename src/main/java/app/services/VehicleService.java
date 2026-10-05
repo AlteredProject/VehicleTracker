@@ -6,10 +6,10 @@ import app.entities.Vehicle;
 
 import java.time.LocalDate;
 
-public class VehicleTrackerService {
+public class VehicleService {
     private final VehicleDAO vehicleDAO;
 
-    public VehicleTrackerService(VehicleDAO vehicleDAO) {
+    public VehicleService(VehicleDAO vehicleDAO) {
         this.vehicleDAO = vehicleDAO;
     }
 
@@ -46,7 +46,6 @@ public class VehicleTrackerService {
 
     public void getVehicle(int id) {
         Vehicle vehicle = vehicleDAO.getById(id);
-
         System.out.println(vehicle);
     }
 
