@@ -7,8 +7,6 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 
-import java.util.List;
-
 public class VehicleDAO extends GenericDAO<Vehicle> {
     // Generic CRUD methods
     public VehicleDAO(EntityManagerFactory emf) {
