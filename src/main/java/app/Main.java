@@ -51,6 +51,9 @@ public class Main {
         userService.createUser(userRegistration);
         userService.getUser(1);
 
+
+        userService.login("John Bakke", "!johnbakke1");
+
         /* === Finds and creates vehicle by registrationNumber ===
         MotorVehicleDTO vehicle = motorAPIService.getVehicle(registrationNumber);
         vehicleService.createVehicle(vehicle);

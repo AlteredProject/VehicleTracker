@@ -43,6 +43,23 @@ public class UserService {
         userDAO.create(userToCreate);
     }
 
+    public void login(String username, String password) {
+        // Check DB for user
+        User user = userDAO.getUserByName(username);
+        if (user == null) {
+            System.out.println("No user with this username found.");
+            return;
+        }
+
+        // Check password
+        if(passwordEncrypter.checkPassword(password, user.getPassword())) {
+            System.out.println("Successfully Logged In");
+            return;
+        } else {
+            System.out.println("Password is incorrect, try again.");
+        }
+    }
+
     public void getUser(int id) {
         User user = userDAO.getById(id);
         System.out.println(user);
