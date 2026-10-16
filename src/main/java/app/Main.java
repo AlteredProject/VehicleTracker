@@ -13,6 +13,9 @@ import io.javalin.Javalin;
 import io.javalin.json.JavalinJackson;
 import jakarta.persistence.EntityManagerFactory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Main {
     static void main() {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
@@ -38,6 +41,8 @@ public class Main {
         });
         app.start(7070);
 
+
+        // === REPLACE ALL FOLLOWING CODE FOR TESTING ENVIRONMENT ===
         String registrationNumber = "CL65485";
 
         UserRegistryDTO userRegistration = new UserRegistryDTO(
@@ -48,7 +53,14 @@ public class Main {
         "!johnbakke1"
         );
 
-        userService.createUser(userRegistration);
+        List<String> loginErrors = userService.createUser(userRegistration);
+
+        if (loginErrors.isEmpty()) {
+            System.out.println("User created successfully");
+        } else {
+            System.out.println(loginErrors);
+        }
+
         userService.getUser(1);
 
 

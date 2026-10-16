@@ -18,29 +18,38 @@ public class UserService {
         this.userDAO = userDAO;
     }
 
-    public void createUser(UserRegistryDTO userToRegister) {
-        //Validate
+    public List<String> createUser(UserRegistryDTO userToRegister) {
+        // Validate
         List<String> errorMessages = userValidator.validate(userToRegister);
+
         if (!errorMessages.isEmpty()) {
-            System.out.println(errorMessages);
-            return;
+            return errorMessages;
         }
 
+        // Check existing user
+        if (userDAO.emailExists(userToRegister.email())) {
+            errorMessages.add("An account with this email already exists");
+            return errorMessages;
+        }
+
+        // Start creation
         User userToCreate = new User();
 
         userToCreate.setUsername(userToRegister.name());
         userToCreate.setEmail(userToRegister.email());
         userToCreate.setPhone(userToRegister.phone());
 
-        //Encrypt
+        // Encrypt
         String encryptedPassword = passwordEncrypter.hashPassword(userToRegister.password());
         userToCreate.setPassword(encryptedPassword);
 
-        //Create
+        // Finish creation
         userToCreate.setCreatedAt(LocalDate.now());
         userToCreate.setUpdatedAt(LocalDate.now());
 
         userDAO.create(userToCreate);
+
+        return errorMessages;
     }
 
     public void login(String username, String password) {

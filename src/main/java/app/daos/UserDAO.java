@@ -30,4 +30,13 @@ public class UserDAO extends GenericDAO<User> {
             }
         }
     }
+
+    public boolean emailExists(String email) {
+        try (EntityManager em = emf.createEntityManager()) {
+            TypedQuery<Long> query = em.createQuery("SELECT COUNT(u) FROM User u WHERE u.email = :email", Long.class);
+            query.setParameter("email", email);
+
+            return query.getSingleResult() > 0;
+        }
+    }
 }
