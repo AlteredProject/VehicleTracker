@@ -13,12 +13,12 @@ public class VehicleService {
         this.vehicleDAO = vehicleDAO;
     }
 
-    public void createVehicle(MotorVehicleDTO vehicleDTO) {
+    public boolean createVehicle(MotorVehicleDTO vehicleDTO) {
         Vehicle existingVehicle = vehicleDAO.getVehicleByRegistrationNumber(vehicleDTO.getRegistrationNumber());
 
         if(existingVehicle != null) {
             System.out.println("Vehicle already exists. Skipping...");
-            return;
+            return false;
         }
 
         Vehicle vehicle = new Vehicle();
@@ -42,11 +42,11 @@ public class VehicleService {
 
         vehicleDAO.create(vehicle);
         System.out.println("Vehicle Successfully created");
+        return true;
     }
 
-    public void getVehicle(int id) {
-        Vehicle vehicle = vehicleDAO.getById(id);
-        System.out.println(vehicle);
+    public Vehicle getVehicle(int id) {
+        return vehicleDAO.getById(id);
     }
 
 }

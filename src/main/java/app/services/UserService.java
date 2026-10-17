@@ -3,6 +3,7 @@ package app.services;
 import app.daos.UserDAO;
 import app.dtos.UserRegistryDTO;
 import app.entities.User;
+import app.utils.LoginResult;
 import app.utils.PasswordEncrypter;
 import app.utils.UserValidator;
 
@@ -52,26 +53,22 @@ public class UserService {
         return errorMessages;
     }
 
-    public void login(String username, String password) {
+    public LoginResult login(String username, String password) {
         // Check DB for user
         User user = userDAO.getUserByName(username);
         if (user == null) {
-            System.out.println("No user with this username found.");
-            return;
+            return new LoginResult(false, "Invalid username or password.");
         }
 
         // Check password
         if(passwordEncrypter.checkPassword(password, user.getPassword())) {
-            System.out.println("Successfully Logged In");
-            return;
+            return new LoginResult(true, "Successfully Logged In");
         } else {
-            System.out.println("Password is incorrect, try again.");
+            return new LoginResult(false, "Invalid username or password.");
         }
     }
 
-    public void getUser(int id) {
-        User user = userDAO.getById(id);
-        System.out.println(user);
-
+    public User getUser(int id) {
+        return userDAO.getById(id);
     }
 }
