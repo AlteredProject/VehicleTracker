@@ -49,5 +49,4 @@ public class PasswordEncrypterTest {
         // Assert
         assertTrue(result);
     }
-
 }
