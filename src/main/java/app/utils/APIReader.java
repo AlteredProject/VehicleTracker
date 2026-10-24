@@ -1,33 +1,37 @@
-package app.utils;
+    package app.utils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+    import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
+    import java.net.URI;
+    import java.net.http.HttpClient;
+    import java.net.http.HttpRequest;
+    import java.net.http.HttpResponse;
 
-public class APIReader {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final HttpClient client = HttpClient.newHttpClient();
+    public class APIReader {
+        private final ObjectMapper objectMapper = new ObjectMapper();
+        private final HttpClient client = HttpClient.newHttpClient();
 
-    public <T> T get(String url, Class<T> responseType, String header, String headerValue) {
-        try {
-            HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .header(header, headerValue)
-                .GET()
-                .build();
+        public <T> T get(String url, Class<T> responseType, String header, String headerValue) {
+            try {
+                HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(url))
+                    .header(header, headerValue)
+                    .GET()
+                    .build();
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            if(response.statusCode() != 200) {
-                throw new RuntimeException("GET request failed. Status code: " + response.statusCode());
+                if(response.statusCode() == 404) {
+                    return null;
+                }
+
+                if(response.statusCode() != 200) {
+                    throw new RuntimeException("GET request failed. Status code: " + response.statusCode());
+                }
+                return objectMapper.readValue(response.body(), responseType);
+
+            } catch (Exception e) {
+                throw new RuntimeException("API Request failed", e);
             }
-            return objectMapper.readValue(response.body(), responseType);
-
-        } catch (Exception e) {
-            throw new RuntimeException("API Request failed", e);
         }
     }
-}
