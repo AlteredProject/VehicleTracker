@@ -1,75 +1,15 @@
 package app;
 
+import app.config.ApplicationConfig;
 import app.config.HibernateConfig;
 import app.daos.*;
-import app.dtos.MotorVehicleDTO;
-import app.dtos.UserRegistryDTO;
-import app.services.MotorAPIService;
-import app.services.UserService;
-import app.services.VehicleService;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import io.javalin.Javalin;
-import io.javalin.json.JavalinJackson;
 import jakarta.persistence.EntityManagerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Main {
     static void main() {
         EntityManagerFactory emf = HibernateConfig.getEntityManagerFactory();
 
-        MotorAPIService motorAPIService = new MotorAPIService();
-
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
-        FuelDAO fuelDAO = new FuelDAO(emf);
-        MaintenanceDAO maintenanceDAO = new MaintenanceDAO(emf);
-        MileageDAO mileageDAO = new MileageDAO(emf);
-        VehicleDAO vehicleDAO = new VehicleDAO(emf);
-        UserDAO userDAO = new UserDAO(emf);
-
-        VehicleService vehicleService = new VehicleService(vehicleDAO);
-        UserService userService = new UserService(userDAO);
-
-        Javalin app = Javalin.create(config -> {
-            config.showJavalinBanner = false;
-            config.jsonMapper(new JavalinJackson().updateMapper(mapper -> mapper.registerModule(new JavaTimeModule())));
-        });
-        app.start(7070);
-
-
-        // === REPLACE ALL FOLLOWING CODE FOR TESTING ENVIRONMENT ===
-        String registrationNumber = "CL65485";
-
-        UserRegistryDTO userRegistration = new UserRegistryDTO(
-        "John Bakke",
-        "john.bakke@gmail.com",
-        "21282224",
-        "!johnbakke1",
-        "!johnbakke1"
-        );
-
-        List<String> loginErrors = userService.createUser(userRegistration);
-
-        if (loginErrors.isEmpty()) {
-            System.out.println("User created successfully");
-        } else {
-            System.out.println(loginErrors);
-        }
-
-        userService.getUser(1);
-
-
-        userService.login("John Bakke", "!johnbakke1");
-
-        /* === Finds and creates vehicle by registrationNumber ===
-        MotorVehicleDTO vehicle = motorAPIService.getVehicle(registrationNumber);
-        vehicleService.createVehicle(vehicle);
-        vehicleService.getVehicle(1);
-         */
+        ApplicationConfig applicationConfig = new ApplicationConfig(emf);
+        applicationConfig.start(7070);
     }
 }
