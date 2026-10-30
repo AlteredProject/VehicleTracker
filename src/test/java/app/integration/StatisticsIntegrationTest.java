@@ -24,7 +24,6 @@ public class StatisticsIntegrationTest {
 
     private final EntityManagerFactory emf = HibernateTestConfig.getEntityManagerFactory();
 
-    private Map<String, User> userMap;
     private Javalin app;
     private String token;
     private Long vehicleId;
@@ -39,7 +38,7 @@ public class StatisticsIntegrationTest {
 
     @BeforeEach
     void beforeEach() {
-        userMap = TestDatabasePopulator.createUsers(emf);
+        Map<String, User> userMap = TestDatabasePopulator.createUsers(emf);
         Map<String, Vehicle> vehicleMap = TestDatabasePopulator.createVehicles(emf, userMap);
 
         TestDatabasePopulator.createEntries(emf, vehicleMap);
