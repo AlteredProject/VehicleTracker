@@ -16,7 +16,7 @@ public class UserValidator {
             return listOfValidationErrors;
         }
 
-        String name = userRegistryDTO.name();
+        String name = userRegistryDTO.username();
         String email = userRegistryDTO.email();
         String phone = userRegistryDTO.phone();
         String password = userRegistryDTO.password();
