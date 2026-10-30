@@ -6,7 +6,7 @@ import app.dtos.UserRegistryDTO;
 import app.entities.User;
 import app.services.UserService;
 import app.testutils.TestDatabasePopulator;
-import app.utils.LoginResult;
+import app.dtos.LoginResultDTO;
 import jakarta.persistence.EntityManagerFactory;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -67,7 +67,7 @@ public class UserServiceTests {
         String password = "!johnbakke1";
 
         // Act
-        LoginResult result = userService.login(username, password);
+        LoginResultDTO result = userService.login(username, password);
 
         // Assert
         assertEquals("Invalid username or password.", result.message());
@@ -80,7 +80,7 @@ public class UserServiceTests {
         String password = "!johnbakke1";
 
         // Act
-        LoginResult result = userService.login(username, password);
+        LoginResultDTO result = userService.login(username, password);
 
         // Assert
         assertTrue(result.success());
@@ -94,7 +94,7 @@ public class UserServiceTests {
         String password = "wrongPassword";
 
         // Act
-        LoginResult result = userService.login(username, password);
+        LoginResultDTO result = userService.login(username, password);
 
         // Assert
         assertEquals("Invalid username or password.", result.message());
