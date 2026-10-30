@@ -3,7 +3,7 @@ package app.services;
 import app.daos.UserDAO;
 import app.dtos.UserRegistryDTO;
 import app.entities.User;
-import app.utils.LoginResult;
+import app.dtos.LoginResultDTO;
 import app.utils.PasswordEncrypter;
 import app.utils.UserValidator;
 
@@ -36,7 +36,7 @@ public class UserService {
         // Start creation
         User userToCreate = new User();
 
-        userToCreate.setUsername(userToRegister.name());
+        userToCreate.setUsername(userToRegister.username());
         userToCreate.setEmail(userToRegister.email());
         userToCreate.setPhone(userToRegister.phone());
 
@@ -53,19 +53,14 @@ public class UserService {
         return errorMessages;
     }
 
-    public LoginResult login(String username, String password) {
-        // Check DB for user
+    public LoginResultDTO login(String username, String password) {
+        // Check DB for user & Check password
         User user = userDAO.getUserByName(username);
-        if (user == null) {
-            return new LoginResult(false, "Invalid username or password.");
+        if (user == null || !passwordEncrypter.checkPassword(password, user.getPassword())) {
+            return new LoginResultDTO(false, "Invalid username or password.", null);
         }
 
-        // Check password
-        if(passwordEncrypter.checkPassword(password, user.getPassword())) {
-            return new LoginResult(true, "Successfully Logged In");
-        } else {
-            return new LoginResult(false, "Invalid username or password.");
-        }
+        return new LoginResultDTO(true, "Successfully Logged In", user.getUserId());
     }
 
     public User getUser(int id) {
