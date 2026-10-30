@@ -129,3 +129,6 @@ Errors are returned as JSON responses with an appropriate HTTP status code.
   "error": "Description of the error"
 }
 ```
+
+# Data Model
+![VehicleTracker](src/images/VehicleTracker-ERD.png )
