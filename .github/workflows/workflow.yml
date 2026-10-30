@@ -44,4 +44,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/vehicleTracker_api:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/vehicletracker_api:latest
