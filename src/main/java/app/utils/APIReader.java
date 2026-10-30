@@ -1,5 +1,6 @@
     package app.utils;
 
+    import app.exceptions.MotorAPIException;
     import com.fasterxml.jackson.databind.ObjectMapper;
 
     import java.net.URI;
@@ -26,7 +27,7 @@
                 }
 
                 if(response.statusCode() != 200) {
-                    throw new RuntimeException("GET request failed. Status code: " + response.statusCode());
+                    throw new MotorAPIException("MotorAPI request failed with status " + response.statusCode(), null);
                 }
                 return objectMapper.readValue(response.body(), responseType);
 
