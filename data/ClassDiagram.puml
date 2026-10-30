@@ -1,0 +1,110 @@
+@startuml
+!pragma layout smetana
+skinparam backgroundColor none
+hide empty members
+'https://plantuml.com/class-diagram
+
+package app {
+    class main
+    package config {
+        class ApplicationConfig
+        class EntityRegistry
+        class HibernateBaseProperties
+        class HibernateConfig
+        class HibernateEmfBuilder
+    }
+    package controllers {
+        package entry {
+            class FuelEntryController
+            class FuelEntryHandler
+            class MaintenanceEntryController
+            class MaintenanceEntryHandler
+            class MileageEntryController
+            class MileageEntryHandler
+        }
+        class StatisticsController
+        class StatisticsHandler
+        class UserController
+        class UserHandler
+        class VehicleController
+        class VehicleHandler
+    }
+    package daos {
+        class FuelEntryDAO
+        abstract class GenericDAO
+        interface IDAO
+        class MaintenanceEntryDAO
+        class MileageEntryDAO
+        class UserDAO
+        class VehicleDAO
+    }
+    package dtos {
+        package entry {
+            record FuelEntryRequestDTO
+            record FuelEntryUpdateDTO
+            record MaintenanceEntryRequestDTO
+            record MaintenanceEntryUpdateDTO
+            record MileageEntryRequestDTO
+        }
+        package statistics {
+            record ExpenseDataPointDTO
+            record ExpenseStatisticsDTO
+            record FuelDataPointDTO
+            record FuelStatisticsDTO
+            record MileageDataPointDTO
+            record MileageStatisticsDTO
+            record VehicleStatisticsDTO
+        }
+        package vehicle {
+            record ManualVehicleCreationDTO
+            class MotorVehicleDTO
+            record VehicleCreationResultDTO
+            record VehicleLookupRequestDTO
+            record VehicleUpdateDTO
+        }
+        record LoginRequestDTO
+        record LoginResultDTO
+        record UserRegistryDTO
+    }
+    package entities {
+        class FuelEntry
+        class MaintenanceEntry
+        class MileageEntry
+        class User
+        class Vehicle
+    }
+    package enums {
+        Enum MaintenanceCategory
+        Enum MileageEntrySource
+        Enum StatisticsPeriod
+    }
+    package exceptions {
+        Exception ApiException
+        Exception BadRequestException
+        Exception ConflictException
+        Exception DatabaseException
+        Exception EntityNotFoundException
+        Exception MotorAPIException
+    }
+    package security {
+        class JWTMiddleware
+    }
+    package services {
+        class FuelEntryService
+        class JWTService
+        class MaintenanceEntryService
+        class MileageEntryService
+        class MotorAPIService
+        class StatisticsService
+        class UserService
+        class VehicleService
+    }
+    package utils {
+        class APIReader
+        class PasswordEncrypter
+        class UserValidator
+        class Utils
+    }
+}
+
+@enduml
