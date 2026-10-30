@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(name = "uk_vehicle_registration_number", columnNames = "registrationNumber"))
 @Getter
 @Setter
 @NoArgsConstructor
@@ -27,18 +28,19 @@ public class Vehicle {
     private String model;
     private String variant;
     private String chassisType;
-    private int modelYear;
+    private Integer modelYear;
     private String color;
     private String fuelType;
     private Double engineVolume;
     private Double enginePower;
-    private float mileage;
+    private Float mileage;
 
     private LocalDate createdAt;
     private LocalDate updatedAt;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude
     private User user;
 
