@@ -1,6 +1,6 @@
 package app.services;
 
-import app.dtos.MotorVehicleDTO;
+import app.dtos.vehicle.MotorVehicleDTO;
 import app.utils.APIReader;
 
 public class MotorAPIService {
