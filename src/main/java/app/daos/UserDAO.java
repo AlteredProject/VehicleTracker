@@ -1,21 +1,27 @@
 package app.daos;
 
 import app.entities.User;
-import app.exceptions.ApiException;
+import app.exceptions.BadRequestException;
+import app.exceptions.DatabaseException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.TypedQuery;
 
-public class UserDAO extends GenericDAO<User> {
+public class UserDAO extends GenericDAO<User, Integer> {
 
     public UserDAO(EntityManagerFactory emf) {
         super(emf, User.class, User.class.getSimpleName());
     }
 
+    @Override
+    protected Integer getId(User user) {
+        return user.getUserId();
+    }
+
     public User getUserByName(String name) {
         if(name == null || name.isEmpty()) {
-            throw new ApiException(400, "Username is required");
+            throw new BadRequestException("Username is required");
         }
 
         try (EntityManager em = emf.createEntityManager()) {
@@ -26,7 +32,7 @@ public class UserDAO extends GenericDAO<User> {
                 return query.getResultStream().findFirst().orElse(null);
 
             } catch (PersistenceException e) {
-                throw new ApiException(500, "Get User failed: " + e.getMessage());
+                throw new DatabaseException("Get User failed: ", e);
             }
         }
     }

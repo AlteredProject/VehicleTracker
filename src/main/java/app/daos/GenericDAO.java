@@ -1,6 +1,8 @@
 package app.daos;
 
-import app.exceptions.ApiException;
+import app.exceptions.BadRequestException;
+import app.exceptions.DatabaseException;
+import app.exceptions.EntityNotFoundException;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -11,15 +13,17 @@ import java.util.List;
 
 
 @AllArgsConstructor
-public abstract class GenericDAO<T> implements IDAO<T, Integer> {
+public abstract class GenericDAO<T, I> implements IDAO<T, I> {
     protected EntityManagerFactory emf;
     private final Class<T> tClass;
     private String entityName;
 
+    protected abstract I getId(T entity);
+
     @Override
     public T create(T entity) {
         if (entity == null) {
-            throw new ApiException(400, entityName + " id is required");
+            throw new BadRequestException(entityName + " id is required");
         }
 
         try (EntityManager em = emf.createEntityManager()) {
@@ -31,7 +35,7 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }
-                throw new ApiException(500, "Create " + entityName + " failed: " + e.getMessage());
+                throw new DatabaseException("Create " + entityName + " failed: ", e);
             } catch (RuntimeException e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
@@ -43,9 +47,9 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
     }
 
     @Override
-    public T getById(Integer id) {
+    public T getById(I id) {
         if (id == null) {
-            throw new ApiException(400, entityName + " id is required");
+            throw new BadRequestException(entityName + " id is required");
         }
 
         try (EntityManager em = emf.createEntityManager()) {
@@ -54,9 +58,9 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
                 if (entity != null) {
                     return entity;
                 }
-                throw new ApiException(404, entityName + " not found");
+                throw new EntityNotFoundException(entityName + " not found");
             } catch (PersistenceException e) {
-                throw new ApiException(500, "Get " + entityName + " failed: " + e.getMessage());
+                throw new DatabaseException("Get " + entityName + " failed: ", e);
             }
         }
     }
@@ -65,10 +69,10 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
     public List<T> getAll() {
         try (EntityManager em = emf.createEntityManager()) {
             try {
-                String query = "SELECT t FROM" + tClass.getSimpleName() + " t";
+                String query = "SELECT t FROM " + tClass.getSimpleName() + " t";
                 return new ArrayList<>(em.createQuery(query, tClass).getResultList());
             } catch (PersistenceException e) {
-                throw new ApiException(500, "Getting all" + entityName + " failed: " + e.getMessage());
+                throw new DatabaseException("Getting all" + entityName + " failed: ", e);
             }
         }
     }
@@ -77,24 +81,30 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
     public T update(T entity) {
 
         if (entity == null) {
-            throw new ApiException(400, entityName + " id is required");
+            throw new BadRequestException(entityName + " is required");
         }
 
-        T updated;
+        I id = getId(entity);
+
+        if (id == null) {
+            throw new BadRequestException(entityName + " ID is required");
+        }
+
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             try {
-                T existing = em.find(tClass, entity);
+                T existing = em.find(tClass, id);
                 if (existing == null) {
-                    throw new ApiException(404, entityName + " not found");
+                    throw new EntityNotFoundException(entityName + " not found");
                 }
-                updated = em.merge(entity);
+                T updated = em.merge(entity);
                 em.getTransaction().commit();
+                return updated;
             } catch (PersistenceException e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }
-                throw new ApiException(500, "Update" + entityName + " failed: " + e.getMessage());
+                throw new DatabaseException("Update" + entityName + " failed: ", e);
             } catch (RuntimeException e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
@@ -102,14 +112,13 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
                 throw e;
             }
         }
-        return updated;
     }
 
     @Override
-    public boolean delete(Integer id) {
+    public boolean delete(I id) {
 
         if (id == null) {
-            throw new ApiException(400, entityName + " id is required");
+            throw new BadRequestException(entityName + " id is required");
         }
 
         try (EntityManager em = emf.createEntityManager()) {
@@ -119,14 +128,14 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
                 if (entityToRemove != null) {
                     em.remove(entityToRemove);
                 } else {
-                    throw new ApiException(404, entityName + " not found");
+                    throw new EntityNotFoundException(entityName + " not found");
                 }
                 em.getTransaction().commit();
             } catch (PersistenceException e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
                 }
-                throw new ApiException(500, "Delete " + entityName + " failed: " + e.getMessage());
+                throw new DatabaseException("Delete " + entityName + " failed: ", e);
             } catch (RuntimeException e) {
                 if (em.getTransaction().isActive()) {
                     em.getTransaction().rollback();
@@ -135,5 +144,34 @@ public abstract class GenericDAO<T> implements IDAO<T, Integer> {
             }
         }
         return true;
+    }
+
+    public T createInTransaction(EntityManager em, T entity) {
+        if (entity == null) {
+            throw new BadRequestException(entityName + " is required");
+        }
+
+        em.persist(entity);
+        return entity;
+    }
+
+    public T updateInTransaction(EntityManager em, T entity) {
+        if (entity == null) {
+            throw new BadRequestException(entityName + " is required");
+        }
+
+        I id = getId(entity);
+
+        if (id == null) {
+            throw new BadRequestException(entityName + " ID is required");
+        }
+
+        T existing = em.find(tClass, id);
+
+        if (existing == null) {
+            throw new EntityNotFoundException(entityName + " not found");
+        }
+
+        return em.merge(entity);
     }
 }
